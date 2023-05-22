@@ -1,0 +1,33 @@
+---
+- name: sample book
+  hosts: group
+  vars:
+    a: 20
+    b: 30
+  tasks:
+  - name: sample one
+    raw: whoami
+    register: output
+
+  - name: printing the output
+    vars:
+     li: [1,2,3,4]
+    debug: msg={{item+a}}
+    loop: "{{li}}"
+
+  - name: print all the facts
+    debug:
+      msg: 
+       - "{{ansible_facts.all_ipv4_addresses[0]}}"
+       - "the out put is = {{output.stdout}}"
+
+  - name: list all the packages when pwd is failed
+    yum:
+     list: installed
+    register: paclis
+    when: output.rc != 0
+  
+  - name: print all the packages
+    debug:
+      msg:
+       - "paclis is: {{paclis}}"

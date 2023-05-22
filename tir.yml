@@ -1,0 +1,32 @@
+
+---
+- name: install tree
+  hosts: localhost
+  gather_facts: no
+  vars:
+    a: "jenkins"
+  vars_files:
+    - evars
+  tasks:
+    - name: install the tree module
+      become: true
+      yum:
+       name: tree
+       state: present
+       use_backend: yum
+      register: output
+      ignore_errors: true
+
+    - name: handling always changed part
+      shell: ls -la
+      register: output
+      changed_when: false
+      notify:
+       - "group 1"
+  handlers:
+     - name: handler 1
+       debug:
+         msg:
+          - "{{output}}"
+       listen:
+        - "group 1"

@@ -1,0 +1,35 @@
+---
+- name: sample book
+  gather_facts: no
+  hosts: group
+  vars:
+   a: $ONE
+  tasks:
+  - name: sample one
+    raw: pwd
+    register: rawout
+    when: a == "raw"
+
+  - name: sample 2
+    command: pwd
+    register: comout
+    when: a=="command"
+  
+  - name: sample 3
+    shell: pwd
+    register: shellout
+    when: a=="shell"
+
+  - name: sample 4
+    set_fact:
+      x: variable defined
+    when: x== ""
+
+  - name: print all
+    debug:
+     msg:
+      - "print the raw: {{rawout}}"
+      - "print the command: {{comout}}"
+      - "print the shell: {{shellout}}"
+      - "print the var: {{x}}"
+    ignore_errors: true
